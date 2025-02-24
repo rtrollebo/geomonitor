@@ -52,6 +52,69 @@ func Run(url string, ctx context.Context) error {
 	return nil
 }
 
+func SearchByTime(array []GoesXray, value time.Time) (int, int) {
+	length := len(array)
+	if length == 0 {
+		return -1, 0
+	}
+	if length == 1 {
+		return 0, 0
+	}
+	if value.Before(array[0].TimeTag) || value.After(array[length-1].TimeTag) {
+		return -1, 0
+	}
+	var idx int
+	var delta int
+	delta = length - 1
+	idx = delta / 2
+	var checks int
+	checks = 0
+	var after bool
+	var turn bool
+	turn = true
+	for {
+		v := array[idx]
+
+		if turn {
+			delta = delta / 2
+		}
+
+		if delta < 2 {
+			checks = checks + 1
+			break
+		}
+		if value.After(v.TimeTag) {
+			idx = idx + delta
+			if idx >= length-1 {
+				idx = length - 1
+			}
+			if !after {
+				turn = true
+			} else {
+				turn = false
+			}
+			after = true
+		}
+		if value.Before(v.TimeTag) {
+			idx = idx - delta
+			if idx < 0 {
+				idx = 0
+			}
+			if after {
+				turn = true
+			} else {
+				turn = false
+			}
+			after = false
+		}
+		checks = checks + 1
+		if checks > 10000 {
+			return -1, checks
+		}
+	}
+	return idx, checks
+}
+
 func getGoesXrayData(url string) ([]GoesXray, error) {
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
