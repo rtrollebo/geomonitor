@@ -26,23 +26,19 @@ func TestSearchByTime(t *testing.T) {
 		2025, 01, 01, 12, 03, 30, 0, time.UTC)}
 
 	array := []GoesXray{t1, t2, t3, t4, t5, t6, t7, t8}
+	assertTimeWithinRange(t, array, time.Date(
+		2025, 01, 01, 12, 03, 00, 0, time.UTC), 6)
+	assertTimeWithinRange(t, array, time.Date(
+		2025, 01, 01, 12, 01, 00, 0, time.UTC), 2)
+}
 
-	idx1, c1 := SearchByTime(array, time.Date(
-		2025, 01, 01, 12, 03, 00, 0, time.UTC))
-	if c1 > 5 {
+func assertTimeWithinRange(t *testing.T, array []GoesXray, timeValue time.Time, centerValue int) {
+	idx, c := SearchByTime(array, timeValue)
+	if c > (len(array) / 2) {
 		t.Errorf("Too many iterations")
 	}
-	if idx1 < 5 && idx1 > 7 {
-		t.Errorf(fmt.Sprintf("Failed: idx1=%d, %d", idx1, c1))
-	}
-
-	idx2, c2 := SearchByTime(array, time.Date(
-		2025, 01, 01, 12, 01, 00, 0, time.UTC))
-	if c2 > 5 {
-		t.Errorf("Too many iterations")
-	}
-	if idx2 < 1 && idx2 > 3 {
-		t.Errorf(fmt.Sprintf("Failed: idx2=%d, %d", idx2, c2))
+	if idx < (centerValue-1) || idx > (centerValue+1) {
+		t.Errorf(fmt.Sprintf("Failed: idx=%d, %d", idx, c))
 	}
 
 }
