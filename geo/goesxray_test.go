@@ -25,11 +25,16 @@ func TestSearchByTime(t *testing.T) {
 	t8 := GoesXray{TimeTag: time.Date(
 		2025, 01, 01, 12, 03, 30, 0, time.UTC)}
 
-	array := []GoesXray{t1, t2, t3, t4, t5, t6, t7, t8}
-	assertTimeWithinRange(t, array, time.Date(
+	array1 := []GoesXray{}
+	assertTimeWithinRange(t, array1, time.Date(
+			2025, 01, 01, 12, 03, 00, 0, time.UTC), 0)
+	array2 := []GoesXray{t1, t2, t3, t4, t5, t6, t7, t8}
+	assertTimeWithinRange(t, array2, time.Date(
 		2025, 01, 01, 12, 03, 00, 0, time.UTC), 6)
-	assertTimeWithinRange(t, array, time.Date(
+	assertTimeWithinRange(t, array2, time.Date(
 		2025, 01, 01, 12, 01, 00, 0, time.UTC), 2)
+		assertTimeWithinRange(t, array2, time.Date(
+			2025, 01, 05, 12, 00, 00, 0, time.UTC), 0)
 }
 
 func assertTimeWithinRange(t *testing.T, array []GoesXray, timeValue time.Time, centerValue int) {
