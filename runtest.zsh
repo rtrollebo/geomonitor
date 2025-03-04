@@ -1,2 +1,2 @@
-# Description: Run all tests in the internal package
+# Description: Run all tests in the geomonitor package
 go test github.com/rtrollebo/geomonitor/geo
