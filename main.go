@@ -14,10 +14,11 @@ import (
 )
 
 func ReadChannel(messages chan monitor.TaskResult, max_routines int) {
+	timeOut := 10
 	for {
 		select {
 		case <-messages:
-		case <-time.After(time.Second * 5):
+		case <-time.After(time.Second * time.Duration(timeOut)):
 			if runtime.NumGoroutine() > max_routines {
 				fmt.Println("Routines taking too long time. Aborting.")
 				os.Exit(1)

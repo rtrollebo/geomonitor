@@ -68,7 +68,7 @@ func Run(url string, ctx context.Context) error {
 		}
 		// TODO: remove element that not processed ?
 		if reventEvent.Processed {
-			timeStart = reventEvent.TimeEnd
+			timeStart = time.Now().Add(time.Duration(-5) * time.Minute)
 			oldEvents = events
 		}
 		if !reventEvent.Processed {
@@ -212,13 +212,13 @@ func updateEvent(array []GoesXray, event GeoEvent) (GeoEvent, string, error) {
 }
 
 func getGoesXrayData(url string) ([]GoesXray, error) {
-
+	timeOut := 6 * time.Second
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
 	client := http.Client{
-		Timeout: 10 * time.Second,
+		Timeout: timeOut,
 	}
 	res, err := client.Do(req)
 	if err != nil {
