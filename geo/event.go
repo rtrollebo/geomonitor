@@ -20,6 +20,8 @@ const (
 
 type GeoEvent struct {
 	Time        time.Time
+	TimeStart   time.Time
+	TimeEnd     time.Time
 	Event       int8
 	Cat         int8
 	Value       float32
