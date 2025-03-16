@@ -8,8 +8,9 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"os"
 	"time"
+
+	"github.com/rtrollebo/geomonitor/internal"
 )
 
 type GoesXray struct {
@@ -26,7 +27,7 @@ func Run(url string, ctx context.Context) error {
 	logError := ctx.Value("logerror").(*log.Logger)
 	logInfo := ctx.Value("loginfo").(*log.Logger)
 
-	events, readEventsEror := readFile("events.json")
+	events, readEventsEror := internal.ReadFile[GeoEvent]("events.json")
 	if readEventsEror != nil {
 		logError.Println("Failed to read events file")
 		return readEventsEror
@@ -46,7 +47,7 @@ func Run(url string, ctx context.Context) error {
 			logInfo.Print(msg)
 		}
 		logInfo.Printf("No prev. events. New events detected: %d", len(events))
-		writeError := writeFile(events, "events.json")
+		writeError := internal.WriteFile[GeoEvent](events, "events.json")
 		if writeError != nil {
 			logError.Println("Failed to write events file")
 			return writeError
@@ -84,7 +85,7 @@ func Run(url string, ctx context.Context) error {
 			logInfo.Print(msg)
 		}
 		updatedEvents = append(oldEvents, newEvents...)
-		writeError := writeFile(updatedEvents, "events.json")
+		writeError := internal.WriteFile[GeoEvent](updatedEvents, "events.json")
 		if writeError != nil {
 			logError.Println("Failed to write events file")
 			return writeError
@@ -235,31 +236,4 @@ func getGoesXrayData(url string) ([]GoesXray, error) {
 	}
 	return jsonData, nil
 
-}
-
-func writeFile(events []GeoEvent, name string) error {
-	file, err := os.Create(name)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-	err = json.NewEncoder(file).Encode(events)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func readFile(name string) ([]GeoEvent, error) {
-	file, err := os.Open(name)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-	jsonData := []GeoEvent{}
-	err = json.NewDecoder(file).Decode(&jsonData)
-	if err != nil {
-		return nil, err
-	}
-	return jsonData, nil
 }
