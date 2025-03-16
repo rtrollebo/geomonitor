@@ -25,8 +25,26 @@ type TaskDefault struct {
 	Observations []geo.GoesXray
 }
 
+type TaskNotify struct {
+	Name        string
+	Sender      string
+	Recipient   string
+	SmtpAddress string
+	SmtpPort    string
+	SmtpPass    string
+}
+
 func (t TaskDefault) Run(ch chan TaskResult, ctx context.Context) {
 	err := geo.Run(t.Url, ctx)
+	if err != nil {
+		ch <- TaskResult{Cause: err.Error()}
+		return
+	}
+	ch <- TaskResult{TimeTaken: 1, TimeStarted: time.Now(), TimeCompleted: time.Now(), Completed: false}
+}
+
+func (t TaskNotify) Run(ch chan TaskResult, ctx context.Context) {
+	err := Run(ctx, t.Sender, t.Recipient, t.SmtpAddress, t.SmtpPort, t.SmtpPass)
 	if err != nil {
 		ch <- TaskResult{Cause: err.Error()}
 		return

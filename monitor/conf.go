@@ -6,8 +6,13 @@ import (
 )
 
 type Configuration struct {
-	GoesServiceUrl string `json:"goesServiceUrl"`
-	TaskInterval   int    `json:"taskInterval"`
+	GoesServiceUrl    string   `json:"goesServiceUrl"`
+	TaskInterval      int      `json:"taskInterval"`
+	NotifySender      string   `json:"notifySender"`
+	NotifyRecipients  []string `json:"notifyRecipients"`
+	NotifySmtpAddress string   `json:"notifySmtpAddress"`
+	NotifySmtpPort    string   `json:"notifySmtpPort"`
+	NotifySmtpPass    string   `json:"notifySmtpPass"`
 }
 
 func ReadConfigFile(name string) (Configuration, error) {

@@ -65,7 +65,8 @@ func main() {
 
 	monitorConfig, confErr := monitor.ReadConfigFile("config.json")
 	if confErr != nil {
-		LogError.Println("Failed to write config")
+		LogError.Println("Failed to read config: " + confErr.Error())
+		os.Exit(1)
 	}
 
 	ctx := context.Background()
@@ -78,7 +79,8 @@ func main() {
 	scheduleInterval := monitorConfig.TaskInterval
 
 	task1 := monitor.TaskDefault{Url: monitorConfig.GoesServiceUrl, Name: "GoesXray"}
-	tasks := []monitor.Runner{task1}
+	task2 := monitor.TaskNotify{Sender: monitorConfig.NotifySender, Recipient: monitorConfig.NotifyRecipients[0], SmtpAddress: monitorConfig.NotifySmtpAddress, SmtpPort: monitorConfig.NotifySmtpPort, SmtpPass: monitorConfig.NotifySmtpPass, Name: "NotifyTask"}
+	tasks := []monitor.Runner{task1, task2}
 
 	os_signal := make(chan os.Signal, 1)
 	signal.Notify(os_signal, syscall.SIGINT, syscall.SIGTERM)
