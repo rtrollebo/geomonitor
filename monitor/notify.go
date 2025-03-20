@@ -60,7 +60,7 @@ func Run(ctx context.Context, sender string, recipient string, smtpAddress strin
 		logError.Println("Failed to read events file")
 	}
 	if events == nil || len(events) == 0 {
-		logError.Println("No events found")
+		logInfo.Println("No events found")
 		return nil
 	}
 
