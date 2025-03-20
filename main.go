@@ -13,6 +13,9 @@ import (
 	"github.com/rtrollebo/geomonitor/monitor"
 )
 
+const application = "geomonitor"
+var version = "undefined"
+
 func ReadChannel(messages chan monitor.TaskResult, max_routines int) {
 	timeOut := 10
 	for {
@@ -74,7 +77,7 @@ func main() {
 	ctx = context.WithValue(ctx, "logwarning", LogWarning)
 	ctx = context.WithValue(ctx, "logerror", LogError)
 
-	LogInfo.Println("Starting application")
+	LogInfo.Println("Starting application "+application+" version "+version)
 
 	scheduleInterval := monitorConfig.TaskInterval
 
