@@ -3,9 +3,9 @@ package monitor
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"net/smtp"
-	"strconv"
 	"time"
 
 	"github.com/rtrollebo/geomonitor/geo"
@@ -86,10 +86,10 @@ func Run(ctx context.Context, sender string, recipient string, smtpAddress strin
 	}
 
 	logInfo.Println("Sending email notification: " + recipient)
-	msg := "Geophysical Solar flare (XRay event) occurred at " + recentEvent.Time.Format("2006-01-02 15:04:05") + " UTC\n"
-	msg += "Event: " + recentEvent.Description + "\n"
-	msg += "Peak: " + strconv.FormatFloat(float64(recentEvent.Value), 'f', -1, 64) + "\n"
-	msg += "Category: " + string(recentEvent.Cat) + "\n"
+	msg := "Solar flare (XRay event) occurred at " + recentEvent.Time.Format("2006-01-02 15:04:05") + " UTC\n"
+	msg += fmt.Sprintf("Event: %s\n", recentEvent.Description)
+	msg += fmt.Sprintf("Peak flux: %.2E\n", recentEvent.Value)
+	msg += fmt.Sprintf("Category: %d\n", recentEvent.Cat)
 	msg += "\n\ngeomonitor"
 	err := smtp.SendMail(smtpAddress+":"+smtpPort,
 		smtp.PlainAuth("", sender, smtpPass, smtpAddress),
