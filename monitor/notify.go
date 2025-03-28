@@ -87,9 +87,10 @@ func Run(ctx context.Context, sender string, recipient string, smtpAddress strin
 
 	logInfo.Println("Sending email notification: " + recipient)
 	msg := "Solar flare (XRay event) occurred at " + recentEvent.Time.Format("2006-01-02 15:04:05") + " UTC\n"
-	msg += fmt.Sprintf("Event: %s\n", recentEvent.Description)
+	msg += fmt.Sprintf("Event Type %s\n", recentEvent.Event.String())
+	msg += fmt.Sprintf("Description: %s\n", recentEvent.Description)
 	msg += fmt.Sprintf("Peak flux: %.2E\n", recentEvent.Value)
-	msg += fmt.Sprintf("Category: %d\n", recentEvent.Cat)
+	msg += fmt.Sprintf("Category: %s\n", recentEvent.Class.String())
 	msg += "\n\ngeomonitor"
 	err := smtp.SendMail(smtpAddress+":"+smtpPort,
 		smtp.PlainAuth("", sender, smtpPass, smtpAddress),

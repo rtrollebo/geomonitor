@@ -162,22 +162,22 @@ func DetectEvent(array []GoesXray, timeFrom time.Time) ([]GeoEvent, string, erro
 		if prev.Flux > v.Flux && rate > 0 {
 			var newEvent GeoEvent
 			if prev.Flux < 1.0e-7 {
-				newEvent = GeoEvent{Time: prev.TimeTag, Event: XRAY_FLUX_CHANGED, Description: "A Xray event", Value: float32(prev.Flux), Cat: XRAY_FLARE_A}
+				newEvent = GeoEvent{Time: prev.TimeTag, Event: XRAY_FLUX_CHANGED, Description: "A Xray event", Value: float32(prev.Flux), Class: XRAY_FLARE_A}
 			}
 			if prev.Flux > 1.0e-7 && prev.Flux < 1.0e-6 {
-				newEvent = GeoEvent{Time: prev.TimeTag, Event: XRAY_FLUX_CHANGED, Description: "B Xray event", Value: float32(prev.Flux), Cat: XRAY_FLARE_B}
+				newEvent = GeoEvent{Time: prev.TimeTag, Event: XRAY_FLUX_CHANGED, Description: "B Xray event", Value: float32(prev.Flux), Class: XRAY_FLARE_B}
 			}
 			if prev.Flux > 1.0e-6 && prev.Flux < 1.0e-5 {
-				newEvent = GeoEvent{Time: prev.TimeTag, Event: XRAY_FLUX_CHANGED, Description: "C Xray event", Value: float32(prev.Flux), Cat: XRAY_FLARE_C}
+				newEvent = GeoEvent{Time: prev.TimeTag, Event: XRAY_FLUX_CHANGED, Description: "C Xray event", Value: float32(prev.Flux), Class: XRAY_FLARE_C}
 			}
 			if prev.Flux > 1.0e-5 && prev.Flux < 1.0e-4 {
-				newEvent = GeoEvent{Time: prev.TimeTag, Event: XRAY_FLUX_CHANGED, Description: "M Xray event", Value: float32(prev.Flux), Cat: XRAY_FLARE_M}
+				newEvent = GeoEvent{Time: prev.TimeTag, Event: XRAY_FLUX_CHANGED, Description: "M Xray event", Value: float32(prev.Flux), Class: XRAY_FLARE_M}
 			}
 			if prev.Flux > 1.0e-4 {
-				newEvent = GeoEvent{Time: prev.TimeTag, Event: XRAY_FLUX_CHANGED, Description: "X Xray event", Value: float32(prev.Flux), Cat: XRAY_FLARE_X}
+				newEvent = GeoEvent{Time: prev.TimeTag, Event: XRAY_FLUX_CHANGED, Description: "X Xray event", Value: float32(prev.Flux), Class: XRAY_FLARE_X}
 			}
 
-			if newEvent.Cat >= int8(cutoff) {
+			if newEvent.Class >= cutoff {
 				events = append(events, newEvent)
 			}
 		}
@@ -205,10 +205,10 @@ func updateEvent(array []GoesXray, event GeoEvent) (GeoEvent, string, error) {
 		return GeoEvent{}, "", errors.New("Failed to find fwhm")
 	} else if fwhmLower != -1 && fwhmUpper != -1 {
 
-		return GeoEvent{Event: event.Event, Time: event.Time, TimeStart: array[fwhmLower].TimeTag, TimeEnd: array[fwhmUpper].TimeTag, Cat: event.Cat, Value: event.Value, Processed: true, Description: fmt.Sprintf("Duration (mins): %d", (fwhmUpper-fwhmLower)/2)}, "Ongoing event closed", nil
+		return GeoEvent{Event: event.Event, Time: event.Time, TimeStart: array[fwhmLower].TimeTag, TimeEnd: array[fwhmUpper].TimeTag, Class: event.Class, Value: event.Value, Processed: true, Description: fmt.Sprintf("Duration (mins): %d", (fwhmUpper-fwhmLower)/2)}, "Ongoing event closed", nil
 	} else {
 		// Unprocessed event still ongoing
-		return GeoEvent{Event: event.Event, Time: event.Time, Cat: event.Cat, Value: event.Value, Processed: false, Description: "Ongoing event"}, "Ongoing event", nil
+		return GeoEvent{Event: event.Event, Time: event.Time, Class: event.Class, Value: event.Value, Processed: false, Description: "Ongoing event"}, "Ongoing event", nil
 	}
 }
 
