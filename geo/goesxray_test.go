@@ -51,7 +51,7 @@ func TestDetectPeak(t *testing.T) {
 	if err != nil {
 		t.Error("Error: ", err)
 	}
-	if len(event) != 1 || event[0].Cat != XRAY_FLARE_M || event[0].Processed == false || event[0].TimeStart.Before(timeFrom) || event[0].TimeEnd.After(timeFrom.Add(4*time.Minute)) {
+	if len(event) != 1 || event[0].Class != XRAY_FLARE_M || event[0].Processed == false || event[0].TimeStart.Before(timeFrom) || event[0].TimeEnd.After(timeFrom.Add(4*time.Minute)) {
 		t.Error("Failed: ", event)
 	}
 
