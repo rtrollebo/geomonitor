@@ -1,3 +1,3 @@
-module github.com/rtrollebo/monitor-framework
+module github.com/rtrollebo/geomonitor
 
 go 1.24.1
